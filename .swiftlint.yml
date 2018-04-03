@@ -1,0 +1,12 @@
+disabled_rules:
+    - trailing_comma
+excluded:
+#    - Tests
+type_body_length:
+    - 300 # warning
+    - 400 # error
+identifier_name:
+    excluded:
+        - n
+        - id
+        - i
