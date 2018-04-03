@@ -64,6 +64,7 @@
 /* Begin PBXFileReference section */
 		108D3FA62072F23F004C6F82 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		108D3FA820730696004C6F82 /* RandomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomTests.swift; sourceTree = "<group>"; };
+		108D3FAA2073D7D4004C6F82 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		10BCB1FB2072D5EB00866F36 /* random_parameter_sets_for_performance.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = random_parameter_sets_for_performance.csv; sourceTree = "<group>"; };
 		10BCB1FC2072D5EB00866F36 /* random_parameter_sets.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = random_parameter_sets.csv; sourceTree = "<group>"; };
 		10BCB1FD2072D5EB00866F36 /* random_parameter_sets_with_variance.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = random_parameter_sets_with_variance.csv; sourceTree = "<group>"; };
@@ -142,6 +143,7 @@
 			children = (
 				OBJ_6 /* Package.swift */,
 				108D3FA62072F23F004C6F82 /* .swiftlint.yml */,
+				108D3FAA2073D7D4004C6F82 /* README.md */,
 				OBJ_7 /* Sources */,
 				OBJ_23 /* Tests */,
 				OBJ_27 /* Products */,
