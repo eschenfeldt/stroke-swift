@@ -139,7 +139,7 @@ public final class StrokeModel {
 extension StrokeCenter {
     convenience init(primaryFromTime time: Double, transferTime: Double, index: Int = 1) {
         let destination = StrokeCenter(comprehensiveFromFullName: "Destination \(index)")
-        self.init(primaryFromFullName: "Primary  \(index)", time: time, transferDestination: destination,
+        self.init(primaryFromFullName: "Primary \(index)", time: time, transferDestination: destination,
                   transferTime: transferTime)
     }
     convenience init(comprehensiveFromTime time: Double, index: Int = 1) {

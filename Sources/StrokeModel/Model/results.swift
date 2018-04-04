@@ -28,9 +28,9 @@ public struct SingleRunResults: Equatable, Results {
             """
         }
         if let optimalStrategy = optimalLocation {
-            out += "Optimal: \(optimalStrategy.string)"
+            out += "Optimal: \(optimalStrategy.string)\n"
         } else {
-            out += "Optimal not computed."
+            out += "Optimal not computed.\n"
         }
         if let maxBenefit = maxBenefit {
             out += "Max Benefit: \(maxBenefit.string)"
@@ -82,6 +82,47 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
 
     public var bestLocation: String {
         return optimalLocation.string
+    }
+
+    public var countsByCenter: [StrokeCenter: Int]? {
+        guard let counts = counts else { return nil }
+        var countsByCenter: [StrokeCenter: Int] = [:]
+        for (strategy, count) in counts {
+            switch strategy {
+            case let .comprehensive(center), let .dripAndShip(center), let .primary(center):
+                if let cumulativeCount = countsByCenter[center] {
+                    countsByCenter[center] = cumulativeCount + count
+                } else {
+                    countsByCenter[center] = count
+                }
+            case .basedOnCutoff:
+                continue
+            }
+        }
+        return countsByCenter
+    }
+    public var percentagesByCenter: [StrokeCenter: Double] {
+        // If we have counts, do the summing on those rather than on percentages
+        if let countsByCenter = countsByCenter {
+            let total = countsByCenter.reduce(0) { sum, pair in
+                return sum + pair.value
+            }
+            return countsByCenter.mapValues { count in Double(count) / Double(total) }
+        }
+        var percentagesByCenter: [StrokeCenter: Double] = [:]
+        for (strategy, percentage) in percentages {
+            switch strategy {
+            case let .comprehensive(center), let .dripAndShip(center), let .primary(center):
+                if let cumulativePercentage = percentagesByCenter[center] {
+                    percentagesByCenter[center] = cumulativePercentage + percentage
+                } else {
+                    percentagesByCenter[center] = percentage
+                }
+            case .basedOnCutoff:
+                continue
+            }
+        }
+        return percentagesByCenter
     }
 
     public var string: String {
