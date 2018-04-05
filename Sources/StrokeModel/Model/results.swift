@@ -88,13 +88,11 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
         guard let counts = counts else { return nil }
         var countsByCenter: [StrokeCenter: Int] = [:]
         for (strategy, count) in counts {
-            switch strategy {
-            case let .comprehensive(center), let .dripAndShip(center), let .primary(center):
-                if let cumulativeCount = countsByCenter[center] {
-                    countsByCenter[center] = cumulativeCount + count
-                } else {
-                    countsByCenter[center] = count
-                }
+            let center = strategy.center
+            if let cumulativeCount = countsByCenter[center] {
+                countsByCenter[center] = cumulativeCount + count
+            } else {
+                countsByCenter[center] = count
             }
         }
         return countsByCenter
@@ -109,13 +107,11 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
         }
         var percentagesByCenter: [StrokeCenter: Double] = [:]
         for (strategy, percentage) in percentages {
-            switch strategy {
-            case let .comprehensive(center), let .dripAndShip(center), let .primary(center):
-                if let cumulativePercentage = percentagesByCenter[center] {
-                    percentagesByCenter[center] = cumulativePercentage + percentage
-                } else {
-                    percentagesByCenter[center] = percentage
-                }
+            let center = strategy.center
+            if let cumulativePercentage = percentagesByCenter[center] {
+                percentagesByCenter[center] = cumulativePercentage + percentage
+            } else {
+                percentagesByCenter[center] = percentage
             }
         }
         return percentagesByCenter

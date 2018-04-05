@@ -122,9 +122,9 @@ struct IschemicModel {
 
     func no_tx_where_to_go(race: Double) -> Strategy {
         if race >= 5.0 {
-            return .comprehensive(minComprehensive)
+            return Strategy(kind: .comprehensive, center: minComprehensive)!
         } else {
-            return .primary(minPrimary)
+            return Strategy(kind: .primary, center: minPrimary)!
         }
     }
 
@@ -147,13 +147,13 @@ struct IschemicModel {
     }
 
     func getAISoutcomes(key: Strategy) -> Outcome? {
-        switch key {
-        case .primary(let hospital):
-            return runPrimaryCenter(usingHospital: hospital)
-        case .comprehensive(let hospital):
-            return runComprehensiveCenter(usingHospital: hospital)
-        case .dripAndShip(let hospital):
-            return runPrimaryThenShip(usingHospital: hospital)
+        switch key.kind {
+        case .primary:
+            return runPrimaryCenter(usingHospital: key.center)
+        case .comprehensive:
+            return runComprehensiveCenter(usingHospital: key.center)
+        case .dripAndShip:
+            return runPrimaryThenShip(usingHospital: key.center)
         }
     }
 

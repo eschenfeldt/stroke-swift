@@ -227,7 +227,7 @@ final class StrokeModelTests: XCTestCase {
             inputs = Inputs(sex: sex, age: age!, race: race!,
                             timeSinceSymptoms: timeSinceSymptoms!,
                             primaries: [primary],
-                            comprehensives: [comprehensive])
+                            comprehensives: [comprehensive])!
 
             let optimalStrategy = ArgumentsAndResults.getStrategyFromString(values[7], primary: primary,
                                                                                comprehensive: comprehensive)
@@ -243,16 +243,19 @@ final class StrokeModelTests: XCTestCase {
             var costs = [Strategy: Double]()
             var qalys = [Strategy: Double]()
             if let primaryCost = primaryCost, primaryCost != 0.0 {
-                costs[Strategy.primary(primary)] = primaryCost
-                qalys[Strategy.primary(primary)] = primaryQaly!
+                let primStrat = Strategy(kind: .primary, center: primary)!
+                costs[primStrat] = primaryCost
+                qalys[primStrat] = primaryQaly!
             }
             if let comprehensiveCost = comprehensiveCost, comprehensiveCost != 0.0 {
-                costs[Strategy.comprehensive(comprehensive)] = comprehensiveCost
-                qalys[Strategy.comprehensive(comprehensive)] = comprehensiveQaly!
+                let compStrat = Strategy(kind: .comprehensive, center: comprehensive)!
+                costs[compStrat] = comprehensiveCost
+                qalys[compStrat] = comprehensiveQaly!
             }
             if let dripAndShipCost = dripAndShipCost, dripAndShipCost != 0.0 {
-                costs[Strategy.dripAndShip(primary)] = dripAndShipCost
-                qalys[Strategy.dripAndShip(primary)] = dripAndShipQaly!
+                let dripStrat = Strategy(kind: .dripAndShip, center: primary)!
+                costs[dripStrat] = dripAndShipCost
+                qalys[dripStrat] = dripAndShipQaly!
             }
 
             results = SingleRunResults(optimalLocation: optimalStrategy,
@@ -298,14 +301,17 @@ final class StrokeModelTests: XCTestCase {
             inputs = Inputs(sex: sex, age: age!, race: race!,
                             timeSinceSymptoms: timeSinceSymptoms!,
                             primaries: [primary],
-                            comprehensives: [comprehensive])
+                            comprehensives: [comprehensive])!
 
             guard let percentPrimary = Double(values[7]),
                 let percentComprehensive = Double(values[8]),
                 let percentDripAndShip = Double(values[9]) else { return nil }
-            let percentages: [Strategy: Double] = [.primary(primary): percentPrimary / 100.0,
-                                                   .comprehensive(comprehensive): percentComprehensive / 100.0,
-                                                   .dripAndShip(primary): percentDripAndShip / 100.0]
+            let primStrat = Strategy(kind: .primary, center: primary)!
+            let compStrat = Strategy(kind: .comprehensive, center: comprehensive)!
+            let dripStrat = Strategy(kind: .dripAndShip, center: primary)!
+            let percentages: [Strategy: Double] = [primStrat: percentPrimary / 100.0,
+                                                   compStrat: percentComprehensive / 100.0,
+                                                   dripStrat: percentDripAndShip / 100.0]
             guard let results = MultiRunResults(fromPercentages: percentages) else {
                 return nil
             }
@@ -316,11 +322,11 @@ final class StrokeModelTests: XCTestCase {
                                           comprehensive: StrokeCenter) -> Strategy? {
             switch string {
             case "Primary":
-                return .primary(primary)
+                return Strategy(kind: .primary, center: primary)
             case "Drip and Ship":
-                return .dripAndShip(primary)
+                return Strategy(kind: .dripAndShip, center: primary)
             case "Comprehensive":
-                return .comprehensive(comprehensive)
+                return Strategy(kind: .comprehensive, center: comprehensive)
             case "Based on cutoff":
                 return nil
             default:

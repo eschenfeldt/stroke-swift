@@ -23,9 +23,7 @@ public final class StrokeModel {
                                     maxBenefit: nil, costs: [:], qalys: [:])
         }
 
-        let dripStrats: [Strategy] = modelInputs.primaries.map { prim in .dripAndShip(prim) }
-        let strategiesToRun: [Strategy] = [.primary(aisModel.minPrimary),
-                                             .comprehensive(aisModel.minComprehensive)] + dripStrats
+        let strategiesToRun: [Strategy] = modelInputs.strategies
         var costs = [Strategy: Double]()
         var qalys = [Strategy: Double]()
         var usedStrategies = [Strategy]()

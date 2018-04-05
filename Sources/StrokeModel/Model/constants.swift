@@ -27,45 +27,43 @@ enum States: Int {
     static let DEATH = States.mrs6
 }
 
-public enum Strategy: Hashable {
-    public var hashValue: Int {
-        switch self {
-        case .primary(let primary):
-            return primary.hashValue
-        case .comprehensive(let comprehensive):
-            return comprehensive.hashValue
-        case .dripAndShip(let primary):
-            return primary.hashValue
-        }
+public struct Strategy: Hashable {
+
+    public enum Kind {
+        case primary
+        case comprehensive
+        case dripAndShip
     }
 
-    public static func == (lhs: Strategy, rhs: Strategy) -> Bool {
-        switch (lhs, rhs) {
-        case let (.primary(lhsValue), .primary(rhsValue)):
-            return lhsValue == rhsValue
-        case let (.comprehensive(lhsValue), .comprehensive(rhsValue)):
-            return lhsValue == rhsValue
-        case let (.dripAndShip(lhsValue), .dripAndShip(rhsValue)):
-            return lhsValue == rhsValue
-        default:
-            return false
-        }
-    }
+    public let kind: Kind
+    public let center: StrokeCenter
 
-    case primary(StrokeCenter)
-    case comprehensive(StrokeCenter)
-    case dripAndShip(StrokeCenter)
+    public init?(kind: Kind, center: StrokeCenter) {
+        switch kind {
+        case .primary:
+            if center.centerType != .primary { return nil }
+        case .dripAndShip:
+            if center.centerType != .primary || center.transferDestination == nil {
+                return nil
+            }
+        case .comprehensive:
+            if center.centerType != .comprehensive { return nil }
+        }
+        self.kind = kind
+        self.center = center
+    }
 
     public var string: String {
-        switch self {
-        case .primary(let primary):
-            return "Primary (\(primary.shortName))"
-        case .dripAndShip(let primary):
-            return "Drip and Ship (\(primary.shortName) to \(primary.transferDestination!.shortName))"
-        case .comprehensive(let comprehensive):
-            return "Comprehensive (\(comprehensive.shortName))"
+        switch kind {
+        case .primary:
+            return "Primary (\(center.shortName))"
+        case .dripAndShip:
+            return "Drip and Ship (\(center.shortName) to \(center.transferDestination!.shortName))"
+        case .comprehensive:
+            return "Comprehensive (\(center.shortName))"
         }
     }
+
 }
 
 func p_call_is_mimic() -> Double {

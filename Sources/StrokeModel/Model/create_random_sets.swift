@@ -32,7 +32,7 @@ extension Inputs {
         comprehensive.time = timeToComprehensive
 
         return Inputs(sex: sex, age: age, race: race, timeSinceSymptoms: timeSinceSymptom,
-                      primaries: primaries, comprehensives: [comprehensive])
+                      primaries: primaries, comprehensives: [comprehensive])!
     }
 
     public static func createNontrivialRandomSet() -> Inputs {

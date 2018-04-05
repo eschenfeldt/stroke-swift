@@ -10,12 +10,21 @@ import XCTest
 
 class ResultsTests: XCTestCase {
 
-    let primary1 = StrokeCenter(primaryFromFullName: "Primary 1")
-    let primary2 = StrokeCenter(primaryFromFullName: "Primary 2")
-    let comprehensive = StrokeCenter(comprehensiveFromFullName: "Comprehensive")
+    var primary1 = StrokeCenter(primaryFromFullName: "Primary 1")
+    var primary2 = StrokeCenter(primaryFromFullName: "Primary 2")
+    var comprehensive = StrokeCenter(comprehensiveFromFullName: "Comprehensive")
+
+    override func setUp() {
+        super.setUp()
+        primary1.addTransferDestination(comprehensive, transferTime: 0)
+        primary2.addTransferDestination(comprehensive, transferTime: 0)
+    }
+
     var strategies: [Strategy] {
-        return [.primary(primary1), .dripAndShip(primary1), .dripAndShip(primary2),
-                .comprehensive(comprehensive)]
+        return [Strategy(kind: .primary, center: primary1)!,
+                Strategy(kind: .dripAndShip, center: primary1)!,
+                Strategy(kind: .dripAndShip, center: primary2)!,
+                Strategy(kind: .comprehensive, center: comprehensive)!]
     }
     var centers: [StrokeCenter] {
         return [primary1, primary2, comprehensive]
@@ -25,16 +34,17 @@ class ResultsTests: XCTestCase {
     }
 
     func optimalCount(strategy: Strategy) -> Int {
-        switch strategy {
-        case .primary(let center):
+        let center = strategy.center
+        switch strategy.kind {
+        case .primary:
             if center == primary1 {
                 return 100
             } else { return 0 }
-        case .comprehensive(let center):
+        case .comprehensive:
             if center == comprehensive {
                 return 400
             } else { return 0 }
-        case .dripAndShip(let center):
+        case .dripAndShip:
             if center == primary1 {
                 return 300
             } else if center == primary2 {
@@ -45,9 +55,11 @@ class ResultsTests: XCTestCase {
     func optimalCount(center: StrokeCenter) -> Int {
         switch center.centerType {
         case .primary:
-            return optimalCount(strategy: .primary(center)) + optimalCount(strategy: .dripAndShip(center))
+            let primStrat = Strategy(kind: .primary, center: center)!
+            let dripStrat = Strategy(kind: .dripAndShip, center: center)!
+            return optimalCount(strategy: primStrat) + optimalCount(strategy: dripStrat)
         case .comprehensive:
-            return optimalCount(strategy: .comprehensive(center))
+            return optimalCount(strategy: Strategy(kind: .comprehensive, center: center)!)
         }
     }
     func optimalPercentage(strategy: Strategy) -> Double {
