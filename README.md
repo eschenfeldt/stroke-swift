@@ -9,7 +9,7 @@ The StrokeModel package exposes the following classes:
 - `StrokeModel`, an encapsulating class that provides public functions for running the model
 - `Inputs`, a class containing all of the direct model inputs, and `Sex`, an enum for patient sex (one of the model inputs)
 - `StrokeCenter`, an open class storing information about a stroke center under consideration, including travel time(s)
-- `SingleRunResults` and `MultiRunResults`, encapsulating model outputs, along with the enum `Strategy` defining the possible triage decisions
+- `SingleRunResults` and `MultiRunResults`, encapsulating model outputs, along with the struct `Strategy` defining the possible triage decisions
 - `Race`, an enum namespace encapsulating several enums and the function `scoreFrom` for use in computing the [RACE score](https://www.mdcalc.com/rapid-arterial-occlusion-evaluation-race-scale-stroke), and static functions `toNIHSS` and `fromNIHSS` for converting between RACE and [NIHSS](https://www.mdcalc.com/nih-stroke-scale-score-nihss).
 
 The simplest way to run the model is to use the optional initializer
