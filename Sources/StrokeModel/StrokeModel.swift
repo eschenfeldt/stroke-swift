@@ -19,7 +19,7 @@ public final class StrokeModel {
                                      addLVOuncertainty: addLVOuncertainty)
 
         if !aisModel.modelIsNecessary {
-            return SingleRunResults(optimalLocation: aisModel.cutoffLocation,
+            return SingleRunResults(optimalStrategy: aisModel.cutoffLocation,
                                     maxBenefit: nil, costs: [:], qalys: [:])
         }
 
@@ -46,7 +46,7 @@ public final class StrokeModel {
             }
         }
 
-        var results = SingleRunResults(optimalLocation: nil,
+        var results = SingleRunResults(optimalStrategy: nil,
                                        maxBenefit: maxQaly.strategy,
                                        costs: costs, qalys: qalys)
         results.get_optimal(strategies: usedStrategies,

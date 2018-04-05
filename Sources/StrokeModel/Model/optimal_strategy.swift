@@ -53,7 +53,7 @@ extension SingleRunResults {
 
         if data.count <= 1 {
             // We've found the optimal strategy just by checking domination
-            optimalLocation = data[0].strategy
+            optimalStrategy = data[0].strategy
             return
         }
 
@@ -83,10 +83,10 @@ extension SingleRunResults {
 
         for thisData in data.reversed() {
             if thisData.icer == nil {
-                optimalLocation = thisData.strategy
+                optimalStrategy = thisData.strategy
                 return
             } else if thisData.icer! < threshold {
-                optimalLocation = thisData.strategy
+                optimalStrategy = thisData.strategy
                 return
             }
         }

@@ -258,7 +258,7 @@ final class StrokeModelTests: XCTestCase {
                 qalys[dripStrat] = dripAndShipQaly!
             }
 
-            results = SingleRunResults(optimalLocation: optimalStrategy,
+            results = SingleRunResults(optimalStrategy: optimalStrategy,
                                        maxBenefit: maxBenefitLocation,
                                        costs: costs,
                                        qalys: qalys)

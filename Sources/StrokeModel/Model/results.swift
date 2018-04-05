@@ -9,11 +9,12 @@
 public protocol Results {
     var string: String { get }
     var bestStrategy: String { get }
+    var bestLocation: String { get }
 }
 
 public struct SingleRunResults: Equatable, Results {
 
-    public internal(set) var optimalLocation: Strategy?
+    public internal(set) var optimalStrategy: Strategy?
     public internal(set) var maxBenefit: Strategy?
     public let costs: [Strategy: Double]
     public let qalys: [Strategy: Double]
@@ -27,7 +28,7 @@ public struct SingleRunResults: Equatable, Results {
             QALY = \(qalys[strategy]!)\n
             """
         }
-        if let optimalStrategy = optimalLocation {
+        if let optimalStrategy = optimalStrategy {
             out += "Optimal: \(optimalStrategy.string)\n"
         } else {
             out += "Optimal not computed.\n"
@@ -39,15 +40,23 @@ public struct SingleRunResults: Equatable, Results {
     }
 
     public var bestStrategy: String {
-        if let optimalStrategy = optimalLocation {
+        if let optimalStrategy = optimalStrategy {
             return optimalStrategy.string
         } else {
             return "Not computed"
         }
     }
 
+    public var bestLocation: String {
+        if let optimalStrategy = optimalStrategy {
+            return optimalStrategy.center.shortName
+        } else {
+            return "Not computed"
+        }
+    }
+
     public static func == (lhs: SingleRunResults, rhs: SingleRunResults) -> Bool {
-        let sameOptimal = lhs.optimalLocation == rhs.optimalLocation
+        let sameOptimal = lhs.optimalStrategy == rhs.optimalStrategy
         let sameMaxBenefit = lhs.maxBenefit == rhs.maxBenefit
 
         let sameKeys = lhs.costs.keys == rhs.costs.keys
@@ -72,7 +81,7 @@ public struct SingleRunResults: Equatable, Results {
 
 public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible {
 
-    public let optimalLocation: Strategy
+    public let optimalStrategy: Strategy
     public let maxBenefit: Strategy?
     public let counts: [Strategy: Int]?
     public let percentages: [Strategy: Double]
@@ -81,7 +90,23 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
     public let results: [SingleRunResults]
 
     public var bestStrategy: String {
-        return optimalLocation.string
+        return optimalStrategy.string
+    }
+    public var bestLocation: String {
+        return optimalDestination.shortName
+    }
+
+    public var optimalDestination: StrokeCenter {
+        if let countsByCenter = countsByCenter {
+            let maxPair = countsByCenter.max { lhs, rhs in
+                lhs.value < rhs.value
+            }
+            return maxPair!.key
+        }
+        let maxPair = percentagesByCenter.max { lhs, rhs in
+                lhs.value < rhs.value
+        }
+        return maxPair!.key
     }
 
     public var countsByCenter: [StrokeCenter: Int]? {
@@ -145,7 +170,7 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
         var tempOptimalCounts = [Strategy: Int]()
         var tempMaxBenefitCounts = [Strategy: Int]()
         for thisResult in results {
-            if let optimal = thisResult.optimalLocation {
+            if let optimal = thisResult.optimalStrategy {
                 if let curOptCount = tempOptimalCounts[optimal] {
                     tempOptimalCounts[optimal] = curOptCount + 1
                 } else {
@@ -176,7 +201,7 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
             }
         }
         self.percentages = percentagesTemp
-        optimalLocation = optimalTemp!
+        optimalStrategy = optimalTemp!
 
         var benefitTemp = [Strategy: Double]()
         var maxBenefitCount = 0
@@ -196,7 +221,7 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
         self.percentages = percentages
         let sortedPercentages = percentages.sorted { lhs, rhs in lhs.value < rhs.value }
         guard let optimal = sortedPercentages.last else { return nil }
-        optimalLocation = optimal.key
+        optimalStrategy = optimal.key
         maxBenefit = nil
         maxBenefitPercentages = [:]
         results = []

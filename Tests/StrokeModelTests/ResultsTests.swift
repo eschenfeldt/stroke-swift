@@ -73,7 +73,7 @@ class ResultsTests: XCTestCase {
 
         func appendResults( toArray array: inout [SingleRunResults], forStrategy strategy: Strategy) {
             for _ in 1...optimalCount(strategy: strategy) {
-                array.append(SingleRunResults(optimalLocation: strategy, maxBenefit: strategy, costs: [:], qalys: [:]))
+                array.append(SingleRunResults(optimalStrategy: strategy, maxBenefit: strategy, costs: [:], qalys: [:]))
             }
         }
 
