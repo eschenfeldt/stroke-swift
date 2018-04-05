@@ -8,7 +8,7 @@
 
 public protocol Results {
     var string: String { get }
-    var bestLocation: String { get }
+    var bestStrategy: String { get }
 }
 
 public struct SingleRunResults: Equatable, Results {
@@ -38,7 +38,7 @@ public struct SingleRunResults: Equatable, Results {
         return out
     }
 
-    public var bestLocation: String {
+    public var bestStrategy: String {
         if let optimalStrategy = optimalLocation {
             return optimalStrategy.string
         } else {
@@ -80,7 +80,7 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
     public let maxBenefitPercentages: [Strategy: Double]
     public let results: [SingleRunResults]
 
-    public var bestLocation: String {
+    public var bestStrategy: String {
         return optimalLocation.string
     }
 
@@ -95,8 +95,6 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
                 } else {
                     countsByCenter[center] = count
                 }
-            case .basedOnCutoff:
-                continue
             }
         }
         return countsByCenter
@@ -118,15 +116,13 @@ public struct MultiRunResults: Results, Equatable, CustomDebugStringConvertible 
                 } else {
                     percentagesByCenter[center] = percentage
                 }
-            case .basedOnCutoff:
-                continue
             }
         }
         return percentagesByCenter
     }
 
     public var string: String {
-        var out = "Optimal: \(bestLocation)\n"
+        var out = "Optimal: \(bestStrategy)\n"
         if let maxBenefit = maxBenefit {
             out += "Max Benefit: \(maxBenefit.string)\n"
         }

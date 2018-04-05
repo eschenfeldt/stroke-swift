@@ -313,7 +313,7 @@ final class StrokeModelTests: XCTestCase {
         }
 
         static func getStrategyFromString(_ string: String, primary: StrokeCenter,
-                                          comprehensive: StrokeCenter) -> Strategy {
+                                          comprehensive: StrokeCenter) -> Strategy? {
             switch string {
             case "Primary":
                 return .primary(primary)
@@ -322,7 +322,7 @@ final class StrokeModelTests: XCTestCase {
             case "Comprehensive":
                 return .comprehensive(comprehensive)
             case "Based on cutoff":
-                return .basedOnCutoff
+                return nil
             default:
                 fatalError("Unrecognized strategy type \(string)")
             }

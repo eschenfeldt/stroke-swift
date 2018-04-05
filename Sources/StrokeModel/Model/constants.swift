@@ -36,8 +36,6 @@ public enum Strategy: Hashable {
             return comprehensive.hashValue
         case .dripAndShip(let primary):
             return primary.hashValue
-        case .basedOnCutoff:
-            return 1
         }
     }
 
@@ -57,7 +55,6 @@ public enum Strategy: Hashable {
     case primary(StrokeCenter)
     case comprehensive(StrokeCenter)
     case dripAndShip(StrokeCenter)
-    case basedOnCutoff
 
     public var string: String {
         switch self {
@@ -67,8 +64,6 @@ public enum Strategy: Hashable {
             return "Drip and Ship (\(primary.shortName) to \(primary.transferDestination!.shortName))"
         case .comprehensive(let comprehensive):
             return "Comprehensive (\(comprehensive.shortName))"
-        case .basedOnCutoff:
-            return "Based on cutoff"
         }
     }
 }

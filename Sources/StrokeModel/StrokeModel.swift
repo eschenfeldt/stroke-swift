@@ -20,7 +20,7 @@ public final class StrokeModel {
 
         if !aisModel.modelIsNecessary {
             return SingleRunResults(optimalLocation: aisModel.cutoffLocation,
-                                    maxBenefit: .basedOnCutoff, costs: [:], qalys: [:])
+                                    maxBenefit: nil, costs: [:], qalys: [:])
         }
 
         let dripStrats: [Strategy] = modelInputs.primaries.map { prim in .dripAndShip(prim) }
@@ -31,19 +31,20 @@ public final class StrokeModel {
         var usedStrategies = [Strategy]()
         var maxQaly: (strategy: Strategy?, qaly: Double) = (strategy: nil, qaly: 0.0)
         for strategy in strategiesToRun {
-            if let ischemicOutcomes = aisModel.getAISoutcomes(key: strategy) {
-                let markovedPopulation = Population(aisModel: aisModel,
-                                                     aisOutcome: ischemicOutcomes,
-                                                     simtype: strategy)
-                markovedPopulation.analyze()
-                let qaly = markovedPopulation.qalys!
-                costs[strategy] = markovedPopulation.costs!
-                qalys[strategy] = qaly
-                usedStrategies.append(strategy)
-                if qaly > maxQaly.qaly {
-                    maxQaly.strategy = strategy
-                    maxQaly.qaly = qaly
-                }
+            guard let ischemicOutcomes = aisModel.getAISoutcomes(key: strategy) else {
+                continue
+            }
+            let markovedPopulation = Population(aisModel: aisModel,
+                                                 aisOutcome: ischemicOutcomes,
+                                                 simtype: strategy)
+            markovedPopulation.analyze()
+            let qaly = markovedPopulation.qalys!
+            costs[strategy] = markovedPopulation.costs!
+            qalys[strategy] = qaly
+            usedStrategies.append(strategy)
+            if qaly > maxQaly.qaly {
+                maxQaly.strategy = strategy
+                maxQaly.qaly = qaly
             }
         }
 

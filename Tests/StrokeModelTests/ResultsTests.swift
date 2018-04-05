@@ -40,8 +40,6 @@ class ResultsTests: XCTestCase {
             } else if center == primary2 {
                 return 500
             } else { return 0 }
-        case .basedOnCutoff:
-            return 0
         }
     }
     func optimalCount(center: StrokeCenter) -> Int {

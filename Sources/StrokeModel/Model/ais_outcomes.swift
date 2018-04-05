@@ -154,8 +154,6 @@ struct IschemicModel {
             return runComprehensiveCenter(usingHospital: hospital)
         case .dripAndShip(let hospital):
             return runPrimaryThenShip(usingHospital: hospital)
-        case .basedOnCutoff:
-            return nil
         }
     }
 
