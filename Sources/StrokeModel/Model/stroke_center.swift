@@ -14,9 +14,15 @@ open class StrokeCenter: Hashable {
         let median: Double
         let thirdQuartile: Double
 
-        static let primary = TimeDistribution(firstQuartile: 47, median: 61, thirdQuartile: 83)
-        static let comprehensive = TimeDistribution(firstQuartile: 39, median: 52, thirdQuartile: 70)
-        static let puncture = TimeDistribution(firstQuartile: 83, median: 145, thirdQuartile: 192)
+        public static let primary = TimeDistribution(firstQuartile: 47, median: 61, thirdQuartile: 83)
+        public static let comprehensive = TimeDistribution(firstQuartile: 39, median: 52, thirdQuartile: 70)
+        public static let puncture = TimeDistribution(firstQuartile: 83, median: 145, thirdQuartile: 192)
+
+        public init(firstQuartile: Double, median: Double, thirdQuartile: Double) {
+            self.firstQuartile = firstQuartile
+            self.median = median
+            self.thirdQuartile = thirdQuartile
+        }
     }
 
     public enum CenterType {
