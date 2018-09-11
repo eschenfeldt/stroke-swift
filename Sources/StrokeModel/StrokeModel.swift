@@ -11,24 +11,38 @@ public final class StrokeModel {
     }
 
     public func run(addTimeUncertainty: Bool = true,
-                    addLVOuncertainty: Bool = true) -> SingleRunResults {
+                    addLVOuncertainty: Bool = true,
+                    fixPerformance: Bool = false) -> SingleRunResults {
 
         Costs.shared.inflate(targetYear: 2016)
 
         let aisModel = IschemicModel(modelInputs, addTimeUncertainty: addTimeUncertainty,
-                                     addLVOuncertainty: addLVOuncertainty)
+                                     addLVOuncertainty: addLVOuncertainty,
+                                     fixPerformance: fixPerformance)
 
         if !aisModel.modelIsNecessary {
             return SingleRunResults(optimalStrategy: aisModel.cutoffLocation,
                                     maxBenefit: nil, costs: [:], qalys: [:])
         }
 
-        let strategiesToRun: [Strategy] = modelInputs.strategies
+        let strategiesToRun: [Strategy] = aisModel.strategies
         var costs = [Strategy: Double]()
         var qalys = [Strategy: Double]()
         var usedStrategies = [Strategy]()
         var maxQaly: (strategy: Strategy?, qaly: Double) = (strategy: nil, qaly: 0.0)
         for strategy in strategiesToRun {
+//            switch strategy.kind {
+//            case .dripAndShip:
+//                print("Drip and Ship")
+//                print("Primary DTN: \(strategy.center.doorToNeedle ?? 0)")
+//                print("Comp DTP: \(strategy.center.transferDestination?.doorToPuncture ?? 0)")
+//            case .comprehensive:
+//                print("Comprehensive")
+//                print("Comp DTP: \(strategy.center.doorToPuncture ?? 0)")
+//            case .primary:
+//                print("Primary")
+//                print("Primary DTN: \(strategy.center.doorToNeedle ?? 0)")
+//            }
             guard let ischemicOutcomes = aisModel.getAISoutcomes(key: strategy) else {
                 continue
             }
@@ -98,6 +112,7 @@ public final class StrokeModel {
 
     public func runWithVariance(timeUncertain: Bool = true,
                                 lvoUncertain: Bool = true,
+                                fixPerformance: Bool = false,
                                 simulationCount n: Int = 1000,
                                 progressHandler: ((Int) -> Void)? = nil,
                                 completionHandler: ((MultiRunResults, Error?) -> Void)? = nil,
@@ -110,7 +125,8 @@ public final class StrokeModel {
         if useGCD {
             DispatchQueue.concurrentPerform(iterations: n) { i in
                 let thisRun = run(addTimeUncertainty: timeUncertain,
-                                  addLVOuncertainty: lvoUncertain)
+                                  addLVOuncertainty: lvoUncertain,
+                                  fixPerformance: fixPerformance)
                 results.addResults([thisRun])
                 if let progressHandler = progressHandler {
                     progressHandler(i)
@@ -120,7 +136,9 @@ public final class StrokeModel {
         } else {
             var resultsList: [SingleRunResults] = []
             for i in 1...n {
-                resultsList.append(run(addTimeUncertainty: timeUncertain, addLVOuncertainty: lvoUncertain))
+                resultsList.append(run(addTimeUncertainty: timeUncertain,
+                                       addLVOuncertainty: lvoUncertain,
+                                       fixPerformance: fixPerformance))
                 if let progressHandler = progressHandler {
                     progressHandler(i)
                 }
@@ -136,9 +154,10 @@ public final class StrokeModel {
 }
 
 extension StrokeCenter {
-    convenience init(primaryFromTime time: Double, transferTime: Double, index: Int = 1) {
-        let destination = StrokeCenter(comprehensiveFromFullName: "Destination \(index)")
-        self.init(primaryFromFullName: "Primary \(index)", time: time, transferDestination: destination,
+    convenience init(primaryFromTime time: Double, transferTime: Double, index: Int = 1,
+                     destination: StrokeCenter? = nil) {
+        let dest = destination ?? StrokeCenter(comprehensiveFromFullName: "Destination \(index)")
+        self.init(primaryFromFullName: "Primary \(index)", time: time, transferDestination: dest,
                   transferTime: transferTime)
     }
     convenience init(comprehensiveFromTime time: Double, index: Int = 1) {

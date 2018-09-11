@@ -68,7 +68,7 @@ struct IschemicModel {
     let timeSinceSymptoms: Double
     let primaries: [StrokeCenter]
     let comprehensives: [StrokeCenter]
-    let times: IntraHospitalTimes
+    let intraTimes: IntraHospitalTimes
     let pLVO: Double
 
     // Computed Properties
@@ -77,21 +77,36 @@ struct IschemicModel {
     }
 
     var minPrimary: StrokeCenter {
-        return primaries.min { lhs, rhs in lhs.time! < rhs.time! }! // There has to be at least one primary
+        return primaries.min { lhs, rhs in
+            lhs.time! + intraTimes.doorToNeedle[lhs]! < rhs.time! + intraTimes.doorToNeedle[rhs]! }!
+        // There has to be at least one primary
     }
 
     var minComprehensive: StrokeCenter {
-        return comprehensives.min { lhs, rhs in lhs.time! < rhs.time! }! // There has to be at least one comprehensive
+        return comprehensives.min { lhs, rhs in
+            lhs.time! + intraTimes.doorToIntraArterial[lhs]! < rhs.time! + intraTimes.doorToIntraArterial[rhs]! }!
+        // There has to be at least one comprehensive
+    }
+
+    public var strategies: [Strategy] {
+        // Drip and ship strategies will be considered for all primaries that have a designated destination
+        //  Any without a destination will be dropped silently
+        let dripStrats: [Strategy] = primaries.compactMap { prim in
+            Strategy(kind: .dripAndShip, center: prim)
+        }
+        let primStrat = Strategy(kind: .primary, center: minPrimary)!
+        let compStrat = Strategy(kind: .comprehensive, center: minComprehensive)!
+        return [primStrat, compStrat] + dripStrats
     }
 
     var minOnsetNeedlePrimary: Double {
         return (timeSinceSymptoms + minPrimary.time! +
-                times.doorToNeedlePrimary)
+                intraTimes.doorToNeedle[minPrimary]!)
     }
 
     var minOnsetEVTnoship: Double {
         return (timeSinceSymptoms + minComprehensive.time! +
-                times.doorToIntraArterial)
+                intraTimes.doorToIntraArterial[minComprehensive]!)
     }
 
     var modelIsNecessary: Bool {
@@ -109,14 +124,18 @@ struct IschemicModel {
     // Methods
     init(_ inputs: Inputs,
          addTimeUncertainty: Bool = false,
-         addLVOuncertainty: Bool = false) {
+         addLVOuncertainty: Bool = false,
+         fixPerformance: Bool = false) {
         sex = inputs.sex
         age = inputs.age
         race = inputs.race
         timeSinceSymptoms = inputs.timeSinceSymptoms
+        let dtnPerf = fixPerformance ? Double.random() : nil
+        let dtpPerf = fixPerformance ? Double.random() : nil
+        intraTimes = IntraHospitalTimes(primaries: inputs.primaries, comprehensives: inputs.comprehensives,
+                                        withUncertainty: addTimeUncertainty, dtnPerf: dtnPerf, dtpPerf: dtpPerf)
         primaries = inputs.primaries
         comprehensives = inputs.comprehensives
-        times = IntraHospitalTimes(withUncertainty: addTimeUncertainty)
         pLVO = pLVOgivenAIS(race: race, addUncertainty: addLVOuncertainty)
     }
 
@@ -130,20 +149,21 @@ struct IschemicModel {
 
     func onsetNeedlePrimary(usingHospital primary: StrokeCenter) -> Double {
         return (timeSinceSymptoms + primary.time! +
-                times.doorToNeedlePrimary)
+                intraTimes.doorToNeedle[primary]!)
     }
     func onset_needle_comprehensive(usingHospital comprehensive: StrokeCenter) -> Double {
         return (timeSinceSymptoms + comprehensive.time! +
-                times.doorToNeedleComprehensive)
+                intraTimes.doorToNeedle[comprehensive]!)
     }
     func onset_evt_noship(usingHospital comprehensive: StrokeCenter) -> Double {
-        return (timeSinceSymptoms + comprehensive.time! +
-                times.doorToIntraArterial)
+        return (timeSinceSymptoms + comprehensive.time! + intraTimes.doorToIntraArterial[comprehensive]!)
     }
     func onset_evt_ship(usingHospital primary: StrokeCenter) -> Double {
+        let comp = primary.transferDestination!
+        let transferToPuncture = intraTimes.doorToIntraArterial[comp]! - intraTimes.doorToNeedle[primary]!
         return (timeSinceSymptoms + primary.time! +
-                times.doorToNeedlePrimary + primary.transferTime! +
-                times.transferToIntraArterial)
+                intraTimes.doorToNeedle[primary]! + primary.transferTime! +
+                transferToPuncture)
     }
 
     func getAISoutcomes(key: Strategy) -> Outcome? {

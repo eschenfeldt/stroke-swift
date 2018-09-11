@@ -13,15 +13,15 @@ public struct Inputs {
     let age: Int
     let race: Double
     let timeSinceSymptoms: Double
-    let primaries: [StrokeCenter]       // guaranteed to have .centerType == .primary
-    let comprehensives: [StrokeCenter]  // guaranteed to have .centerType == .comprehensive
+    let allPrimaries: [StrokeCenter]       // guaranteed to have .centerType == .primary
+    let allComprehensives: [StrokeCenter]  // guaranteed to have .centerType == .comprehensive
+    let usesHospitalPerformance: Bool = false
 
-    var minPrimary: StrokeCenter {
-        return primaries.min { lhs, rhs in lhs.time! < rhs.time! }! // There has to be at least one primary
+    var primaries: [StrokeCenter] {
+        return allPrimaries.filter({ $0.time != nil })
     }
-
-    var minComprehensive: StrokeCenter {
-        return comprehensives.min { lhs, rhs in lhs.time! < rhs.time! }! // There has to be at least one comprehensive
+    var comprehensives: [StrokeCenter] {
+        return allComprehensives.filter({ $0.time != nil })
     }
 
     public var string: String {
@@ -36,17 +36,6 @@ public struct Inputs {
         """
     }
 
-    public var strategies: [Strategy] {
-        // Drip and ship strategies will be considered for all primaries that have a designated destination
-        //  Any without a destination will be dropped silently
-        let dripStrats: [Strategy] = primaries.compactMap { prim in
-            Strategy(kind: .dripAndShip, center: prim)
-        }
-        let primStrat = Strategy(kind: .primary, center: minPrimary)!
-        let compStrat = Strategy(kind: .comprehensive, center: minComprehensive)!
-        return [primStrat, compStrat] + dripStrats
-    }
-
     public init?(sex: Sex, age: Int, race: Double, timeSinceSymptoms: Double, primaries: [StrokeCenter],
                  comprehensives: [StrokeCenter]) {
         // Confirm all of the stroke centers are of the correct type
@@ -57,40 +46,47 @@ public struct Inputs {
         self.age = age
         self.race = race
         self.timeSinceSymptoms = timeSinceSymptoms
-        self.primaries = primaries
-        self.comprehensives = comprehensives
+        self.allPrimaries = primaries
+        self.allComprehensives = comprehensives
     }
 
     public init?(sex: Sex, age: Int, race: Double, timeSinceSymptoms: Double, primaryTimes: [Double],
                  transferTimes: [Double], comprehensiveTimes: [Double]) {
         guard primaryTimes.count == transferTimes.count else { return nil }
+        let times = Array(zip(primaryTimes, transferTimes))
 
-        let times = zip(primaryTimes, transferTimes)
-        var primaries: [StrokeCenter] = []
-        for (index, (time, transferTime)) in times.enumerated() {
-            primaries.append(StrokeCenter(primaryFromTime: time, transferTime: transferTime, index: index))
-        }
-
-        var comprehensives: [StrokeCenter] = []
-        for (index, time) in comprehensiveTimes.enumerated() {
-            comprehensives.append(StrokeCenter(comprehensiveFromTime: time, index: index))
-        }
-        self.init(sex: sex, age: age, race: race, timeSinceSymptoms: timeSinceSymptoms, primaries: primaries,
-                  comprehensives: comprehensives)
+        self.init(sex: sex, age: age, race: race, timeSinceSymptoms: timeSinceSymptoms, primaryTimesAndTransfers: times,
+                  comprehensiveTimes: comprehensiveTimes)
     }
 
     public init(sex: Sex, age: Int, race: Double, timeSinceSymptoms: Double,
                 primaryTimesAndTransfers: [(Double, Double)], comprehensiveTimes: [Double]) {
-        var primaries: [StrokeCenter] = []
-        for (index, (time, transferTime)) in primaryTimesAndTransfers.enumerated() {
-            primaries.append(StrokeCenter(primaryFromTime: time, transferTime: transferTime, index: index))
-        }
 
         var comprehensives: [StrokeCenter] = []
+        var destination: StrokeCenter? = nil
+        var shortestTime = Double.infinity
         for (index, time) in comprehensiveTimes.enumerated() {
-            comprehensives.append(StrokeCenter(comprehensiveFromTime: time, index: index))
+            let comp = StrokeCenter(comprehensiveFromTime: time, index: index)
+            comprehensives.append(comp)
+            if time < shortestTime {
+                shortestTime = time
+                destination = comp
+            }
         }
+        var primaries: [StrokeCenter] = []
+        for (index, (time, transferTime)) in primaryTimesAndTransfers.enumerated() {
+            primaries.append(StrokeCenter(primaryFromTime: time, transferTime: transferTime, index: index,
+                                          destination: destination))
+        }
+
         self.init(sex: sex, age: age, race: race, timeSinceSymptoms: timeSinceSymptoms, primaries: primaries,
                   comprehensives: comprehensives)!
+    }
+
+    public func setTimes(_ times: [Int: Double]) {
+        for center in self.allPrimaries + self.allComprehensives {
+            guard let centerID = center.centerID else { continue }
+            center.time = times[centerID]
+        }
     }
 }

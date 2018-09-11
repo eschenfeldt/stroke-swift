@@ -113,17 +113,26 @@ func getDoorToIntraArterialComprehensive(_ withUncertainty: Bool = true) -> Doub
 }
 
 struct IntraHospitalTimes {
-    let doorToNeedlePrimary: Double
-    let doorToNeedleComprehensive: Double
-    let doorToIntraArterial: Double
-    var transferToIntraArterial: Double {
-        return doorToIntraArterial - doorToNeedlePrimary
-    }
+    let doorToNeedle: [StrokeCenter: Double]
+    let doorToIntraArterial: [StrokeCenter: Double]
 
-    init(withUncertainty: Bool = false) {
-        doorToNeedlePrimary = getDoorToNeedlePrimary(withUncertainty)
-        doorToNeedleComprehensive = getDoorToNeedleComprehensive(withUncertainty)
-        doorToIntraArterial = getDoorToIntraArterialComprehensive(withUncertainty)
+    init(primaries: [StrokeCenter], comprehensives: [StrokeCenter], withUncertainty: Bool = false,
+         dtnPerf: Double? = nil, dtpPerf: Double? = nil) {
+        var dtn: [StrokeCenter: Double] = [:]
+        var dtia: [StrokeCenter: Double] = [:]
+        for prim in primaries {
+            dtn[prim] = prim.getDoorToNeedle(withUncertainty: withUncertainty, performanceLevel: dtnPerf)
+            if let trans = prim.transferDestination {
+                dtn[trans] = trans.getDoorToNeedle(withUncertainty: withUncertainty, performanceLevel: dtnPerf)
+                dtia[trans] = trans.getDoorToPuncture(withUncertainty: withUncertainty, performanceLevel: dtpPerf)
+            }
+        }
+        for comp in comprehensives {
+            dtn[comp] = comp.getDoorToNeedle(withUncertainty: withUncertainty, performanceLevel: dtnPerf)
+            dtia[comp] = comp.getDoorToPuncture(withUncertainty: withUncertainty, performanceLevel: dtpPerf)
+        }
+        doorToNeedle = dtn
+        doorToIntraArterial = dtia
     }
 }
 

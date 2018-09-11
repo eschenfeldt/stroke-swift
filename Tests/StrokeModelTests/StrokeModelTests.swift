@@ -340,6 +340,7 @@ final class StrokeModelTests: XCTestCase {
                 let modelResults = model.runWithVariance(
                     timeUncertain: varyTime,
                     lvoUncertain: varyLVO,
+                    fixPerformance: false,
                     simulationCount: simulationCount,
                     useGCD: useGCD
                 )
@@ -351,7 +352,8 @@ final class StrokeModelTests: XCTestCase {
             } else {
                 let model = StrokeModel(inputs)
                 let singleRunResults = model.run(addTimeUncertainty: false,
-                                                 addLVOuncertainty: false)
+                                                 addLVOuncertainty: false,
+                                                 fixPerformance: false)
                 guard let results = results as? SingleRunResults else {
                     XCTFail("Wrong results type stored")
                     return
