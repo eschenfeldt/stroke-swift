@@ -21,13 +21,11 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		108D3FA920730697004C6F82 /* RandomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108D3FA820730696004C6F82 /* RandomTests.swift */; };
 		10A6166F2075868F00706644 /* ResultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A6166E2075868F00706644 /* ResultsTests.swift */; };
 		10BCB1FF2072D60E00866F36 /* random_parameter_sets_for_performance.csv in Resources */ = {isa = PBXBuildFile; fileRef = 10BCB1FB2072D5EB00866F36 /* random_parameter_sets_for_performance.csv */; };
 		10BCB2002072D61000866F36 /* random_parameter_sets_with_variance.csv in Resources */ = {isa = PBXBuildFile; fileRef = 10BCB1FD2072D5EB00866F36 /* random_parameter_sets_with_variance.csv */; };
 		10BCB2012072D61200866F36 /* random_parameter_sets.csv in Resources */ = {isa = PBXBuildFile; fileRef = 10BCB1FC2072D5EB00866F36 /* random_parameter_sets.csv */; };
 		OBJ_35 /* Inputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* Inputs.swift */; };
-		OBJ_36 /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* Random.swift */; };
 		OBJ_37 /* ais_outcomes.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* ais_outcomes.swift */; };
 		OBJ_38 /* cohort.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* cohort.swift */; };
 		OBJ_39 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* constants.swift */; };
@@ -64,14 +62,12 @@
 
 /* Begin PBXFileReference section */
 		108D3FA62072F23F004C6F82 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
-		108D3FA820730696004C6F82 /* RandomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomTests.swift; sourceTree = "<group>"; };
 		108D3FAA2073D7D4004C6F82 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		10A6166E2075868F00706644 /* ResultsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsTests.swift; sourceTree = "<group>"; };
 		10BCB1FB2072D5EB00866F36 /* random_parameter_sets_for_performance.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = random_parameter_sets_for_performance.csv; sourceTree = "<group>"; };
 		10BCB1FC2072D5EB00866F36 /* random_parameter_sets.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = random_parameter_sets.csv; sourceTree = "<group>"; };
 		10BCB1FD2072D5EB00866F36 /* random_parameter_sets_with_variance.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = random_parameter_sets_with_variance.csv; sourceTree = "<group>"; };
 		OBJ_10 /* Inputs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inputs.swift; sourceTree = "<group>"; };
-		OBJ_11 /* Random.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
 		OBJ_12 /* ais_outcomes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ais_outcomes.swift; sourceTree = "<group>"; };
 		OBJ_13 /* cohort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cohort.swift; sourceTree = "<group>"; };
 		OBJ_14 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
@@ -124,7 +120,6 @@
 				10BCB1FD2072D5EB00866F36 /* random_parameter_sets_with_variance.csv */,
 				10BCB1FC2072D5EB00866F36 /* random_parameter_sets.csv */,
 				OBJ_25 /* StrokeModelTests.swift */,
-				108D3FA820730696004C6F82 /* RandomTests.swift */,
 				10A6166E2075868F00706644 /* ResultsTests.swift */,
 				OBJ_26 /* XCTestManifests.swift */,
 			);
@@ -175,7 +170,6 @@
 			isa = PBXGroup;
 			children = (
 				OBJ_10 /* Inputs.swift */,
-				OBJ_11 /* Random.swift */,
 				OBJ_12 /* ais_outcomes.swift */,
 				OBJ_13 /* cohort.swift */,
 				OBJ_14 /* constants.swift */,
@@ -313,7 +307,6 @@
 			buildActionMask = 0;
 			files = (
 				OBJ_35 /* Inputs.swift in Sources */,
-				OBJ_36 /* Random.swift in Sources */,
 				OBJ_37 /* ais_outcomes.swift in Sources */,
 				OBJ_38 /* cohort.swift in Sources */,
 				OBJ_39 /* constants.swift in Sources */,
@@ -340,7 +333,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				108D3FA920730697004C6F82 /* RandomTests.swift in Sources */,
 				OBJ_65 /* StrokeModelTests.swift in Sources */,
 				10A6166F2075868F00706644 /* ResultsTests.swift in Sources */,
 				OBJ_66 /* XCTestManifests.swift in Sources */,

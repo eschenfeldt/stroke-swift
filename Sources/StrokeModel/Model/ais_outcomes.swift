@@ -16,7 +16,7 @@ func pLVOgivenAIS(race: Double, addUncertainty: Bool) -> Double {
     if addUncertainty {
         let lower = p_lvo_logistic_helper(beta0: -3.6526, beta1: 0.4141, race: race)
         let upper = p_lvo_logistic_helper(beta0: -2.2067, beta1: 0.6925, race: race)
-        pLVO = Double.random() * (upper - lower) + lower
+        pLVO = Double.random(in: lower...upper)
     } else {
         pLVO = p_lvo_logistic_helper(beta0: -2.9297, beta1: 0.5533, race: race)
     }
@@ -130,8 +130,8 @@ struct IschemicModel {
         age = inputs.age
         race = inputs.race
         timeSinceSymptoms = inputs.timeSinceSymptoms
-        let dtnPerf = fixPerformance ? Double.random() : nil
-        let dtpPerf = fixPerformance ? Double.random() : nil
+        let dtnPerf = fixPerformance ? Double.random(in: 0...1) : nil
+        let dtpPerf = fixPerformance ? Double.random(in: 0...1) : nil
         intraTimes = IntraHospitalTimes(primaries: inputs.primaries, comprehensives: inputs.comprehensives,
                                         withUncertainty: addTimeUncertainty, dtnPerf: dtnPerf, dtpPerf: dtpPerf)
         primaries = inputs.primaries

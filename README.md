@@ -1,6 +1,6 @@
 # StrokeModel #
 
-This package implements a Swift 4.1 version of the stroke pre-hospital triage model at https://github.com/namyaila/stroke, extended to allow comparisons of multiple primary stroke centers.
+This package implements a Swift 4.2 version of the stroke pre-hospital triage model at https://github.com/namyaila/stroke, extended to allow comparisons of multiple primary stroke centers.
 
 ### API ###
 

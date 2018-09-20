@@ -31,18 +31,6 @@ public final class StrokeModel {
         var usedStrategies = [Strategy]()
         var maxQaly: (strategy: Strategy?, qaly: Double) = (strategy: nil, qaly: 0.0)
         for strategy in strategiesToRun {
-//            switch strategy.kind {
-//            case .dripAndShip:
-//                print("Drip and Ship")
-//                print("Primary DTN: \(strategy.center.doorToNeedle ?? 0)")
-//                print("Comp DTP: \(strategy.center.transferDestination?.doorToPuncture ?? 0)")
-//            case .comprehensive:
-//                print("Comprehensive")
-//                print("Comp DTP: \(strategy.center.doorToPuncture ?? 0)")
-//            case .primary:
-//                print("Primary")
-//                print("Primary DTN: \(strategy.center.doorToNeedle ?? 0)")
-//            }
             guard let ischemicOutcomes = aisModel.getAISoutcomes(key: strategy) else {
                 continue
             }

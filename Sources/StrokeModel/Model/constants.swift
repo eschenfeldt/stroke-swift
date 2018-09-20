@@ -86,7 +86,7 @@ func getDoorToNeedlePrimary(_ withUncertainty: Bool = true) -> Double {
     if withUncertainty {
         let max = 83.00
         let min = 47.00
-        return Double.random() * (max - min) + min
+        return Double.random(in: min...max)
     } else {
         return 61.00
     }
@@ -96,7 +96,7 @@ func getDoorToNeedleComprehensive(_ withUncertainty: Bool = true) -> Double {
     if withUncertainty {
         let max = 70.00
         let min = 39.00
-        return Double.random() * (max - min) + min
+        return Double.random(in: min...max)
     } else {
         return 52.00
     }
@@ -106,7 +106,7 @@ func getDoorToIntraArterialComprehensive(_ withUncertainty: Bool = true) -> Doub
     if withUncertainty {
         let max = 192.00
         let min = 83.00
-        return Double.random() * (max - min) + min
+        return Double.random(in: min...max)
     } else {
         return 145.00
     }

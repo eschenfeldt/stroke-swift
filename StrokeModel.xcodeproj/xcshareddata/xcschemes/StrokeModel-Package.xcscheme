@@ -37,6 +37,11 @@
                BlueprintName = "StrokeModelTests"
                ReferencedContainer = "container:StrokeModel.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "RandomTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <AdditionalOptions>

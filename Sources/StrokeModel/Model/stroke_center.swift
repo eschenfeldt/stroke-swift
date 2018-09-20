@@ -54,8 +54,6 @@ open class StrokeCenter: Hashable {
     public var transferTime: Double?
     private var dtnDist: TimeDistribution
     private var dtpDist: TimeDistribution?
-//    private(set) var doorToNeedle: Double?
-//    private(set) var doorToPuncture: Double?
 
     public var isComprehensive: Bool {
         return centerType == .comprehensive
@@ -113,7 +111,7 @@ open class StrokeCenter: Hashable {
         }
         let low = dtnDist.firstQuartile
         let high = dtnDist.thirdQuartile
-        let multiplier = performanceLevel ?? Double.random()
+        let multiplier = performanceLevel ?? Double.random(in: 0...1)
         return low + multiplier * (high - low)
     }
 
@@ -126,7 +124,7 @@ open class StrokeCenter: Hashable {
         }
         let low = dtpDist.firstQuartile
         let high = dtpDist.thirdQuartile
-        let multiplier = performanceLevel ?? Double.random()
+        let multiplier = performanceLevel ?? Double.random(in: 0...1)
         return low + multiplier * (high - low)
     }
 

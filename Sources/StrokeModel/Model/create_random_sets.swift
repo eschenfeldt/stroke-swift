@@ -9,17 +9,17 @@
 extension Inputs {
 
     public static func createRandomSet() -> Inputs {
-        let sex = Sex(rawValue: Int.random(below: 2))!
-        let age = Int(30 + Int.random(below: 51))
-        let race = Double(Int.random(below: 10))
-        let timeSinceSymptom = 90 * Double.random() + 10
-        let numPrimaries = 1 + Int.random(below: 5)
+        let sex = Sex(rawValue: Int.random(in: 0...1))!
+        let age = Int.random(in: 30...85)
+        let race = Double(Int.random(in: 0...9))
+        let timeSinceSymptom = Double.random(in: 10...100)
+        let numPrimaries = Int.random(in: 1...6)
         var primaries: [StrokeCenter] = []
         var minTimeToPrimary = Double.infinity
         for id in 0...numPrimaries {
-            let timeToPrimary = 140 * Double.random() + 10
+            let timeToPrimary = Double.random(in: 10...150)
             if timeToPrimary < minTimeToPrimary { minTimeToPrimary = timeToPrimary }
-            let transferTime = 200 * Double.random()
+            let transferTime = Double.random(in: 0...200)
             let primary = StrokeCenter(primaryFromFullName: "Primary \(id)")
             primary.time = timeToPrimary
             let destination = StrokeCenter(comprehensiveFromFullName: "Drip and ship target \(id)")
@@ -27,7 +27,7 @@ extension Inputs {
             primaries.append(primary)
         }
 
-        let timeToComprehensive = (minTimeToPrimary + (350 - minTimeToPrimary) * Double.random())
+        let timeToComprehensive = Double.random(in: minTimeToPrimary...350)
         let comprehensive = StrokeCenter(comprehensiveFromFullName: "Comprehensive")
         comprehensive.time = timeToComprehensive
 
